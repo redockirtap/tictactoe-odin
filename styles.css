@@ -1,0 +1,9 @@
+@font-face {
+    font-family: Inconsolata;
+    src: url("fonts/Inconsolata");
+}
+
+:root {
+    box-sizing: border-box;
+    font-family: Inconsolata, 'Courier New', Courier, monospace;
+}
