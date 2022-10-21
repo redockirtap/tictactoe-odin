@@ -13,12 +13,20 @@
 html, body {
     background-color: var(--main-bg-color);
     color: var(--main-color);
+    
+}
+
+main {
+    height: 100vh;
+    max-width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 100vh;
-    max-width: 100%;
+    background-image: url("images/waves.svg");
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: right;
 }
 
 footer {
