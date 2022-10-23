@@ -5,11 +5,11 @@ const Players = (name) => {
 }
 
 const gameBoard = (() => {
-    const _board = ['x', 'x', 'o', 'o', null, 'o', 'x', 'o', 'o'];
+    const _board = [null, null, null, null, null, null, null, null, null];
     return {_board};
 })();
 
-const displayController = (() => {
+const displayControl = (() => {
     console.log('hi');
 })();
 
@@ -27,9 +27,13 @@ const _gameFlow = (() => {
     };
 
     const _addMarker = (e) => { // adds marker to the board, if it is available
-        if (e.target === e.currentTarget) return;
         const chosenCell = e.target;
-        console.log(chosenCell);
+        const cellIndex = Number(chosenCell.className.at(-1));
+        if (chosenCell === e.currentTarget) return;
+        if (chosenCell.textContent) return;
+        gameBoard._board[cellIndex] = 'x';
+        chosenCell.textContent = 'x';
+        console.log(chosenCell, gameBoard._board);
     }
 
     const _isOver = () => { // checks if game is finished after each step
