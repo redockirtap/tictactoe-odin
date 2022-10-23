@@ -10,10 +10,17 @@ const gameBoard = (() => {
 })();
 
 const displayControl = (() => {
-    console.log('hi');
+    let xx= 1;
+    const addXX = () => ++xx;
+    const getXX = () => xx;
+    return {addXX, getXX}
+    // const _drawMarker = (chosenCell) => {
+    //     chosenCell.textContent = 'x';
+    // }
+    // return {_drawMarker};
 })();
 
-const _gameFlow = (() => {
+const gameFlowLogic = (() => {
     const _button = document.querySelector('.buttonz');
     const _cells = document.querySelector('.board');
 
@@ -26,21 +33,35 @@ const _gameFlow = (() => {
         console.log(player1, player2);
     };
 
-    const _addMarker = (e) => { // adds marker to the board, if it is available
-        const chosenCell = e.target;
-        const cellIndex = Number(chosenCell.className.at(-1));
-        if (chosenCell === e.currentTarget) return;
-        if (chosenCell.textContent) return;
-        gameBoard._board[cellIndex] = 'x';
-        chosenCell.textContent = 'x';
-        console.log(chosenCell, gameBoard._board);
-    }
-
     const _isOver = () => { // checks if game is finished after each step
         if (!_board.includes(null)) return;
         console.log(gameBoard._board);
     }
 
+    const _addMarker = (e) => { // adds marker to the board, if it is available
+        const chosenCell = e.target;
+        const cellIndex = Number(chosenCell.className.at(-1));
+        if (chosenCell === e.currentTarget) return;
+        if (gameBoard._board[cellIndex] !== null) return;
+        gameBoard._board[cellIndex] = 'x';
+        chosenCell.textContent = 'x';
+    }
+
+    
+
     _button.addEventListener('click', _choosePlayer);
     _cells.addEventListener('click', _addMarker);
 })();
+
+console.log(displayControl.addXX())
+console.log(displayControl.getXX())
+
+const counterCreator = () => {
+    let count = 0;
+    return count++
+  }
+  
+ const counter = counterCreator;
+
+ counter()
+ counter()
