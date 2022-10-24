@@ -12,17 +12,19 @@ const gameBoard = (() => {
     const addMarker = (position, marker) => {_board[position] = marker, console.log(_board)};
     const isDraw = () => _board.every((cell) => cell !== null);
     const isWin = (marker) => {console.log("is Win?")};
+    const isBusy = (position) => {console.log(position)};
     const reset = () => _board.fill(null);
     
-    return {getBoard, addMarker, isDraw, isWin, reset};
+    return {getBoard, addMarker, isDraw, isWin, isBusy, reset};
 })();
 
 const displayControl = (() => {
 
-    const _showMarker = (chosenCell) => {
-        chosenCell.textContent = 'x';
+    const showMarker = (e, marker) => {
+        const chosenCell = e.target
+        chosenCell.textContent = marker;
     }
-    return {_showMarker};
+    return {showMarker};
 })();
 
 const gameFlowLogic = (() => {
@@ -37,9 +39,13 @@ const gameFlowLogic = (() => {
     };
     const checkForDraw = () => gameBoard.isDraw() ? gameBoard.reset() : false;
     const checkForWin = () => gameBoard.isWin() ? gameBoard.reset() : false;
-    const addMarker = (e, position=Number(e.target.className.at(-1)), marker='x') => gameBoard.addMarker(position, marker);
-
-    return {choosePlayer, checkForDraw, checkForWin, addMarker};
+    const checkForBusy = () => gameBoard.isBusy(position) ? true : false;
+    const addMarker = (e, position=Number(e.target.className.at(-1)), marker='x') => {
+        if (checkForBusy()) return;
+        console.log(checkForBusy(position));
+        gameBoard.addMarker(position, marker);
+        displayControl.showMarker(e, marker)};
+    return {choosePlayer, checkForDraw, checkForWin, checkForBusy, addMarker};
 })(Players, gameBoard, displayControl);
 
 const eventListeners =(() => {
@@ -47,6 +53,7 @@ const eventListeners =(() => {
     const cells = document.querySelector('.board');
 
     buttons.addEventListener('click', gameFlowLogic.choosePlayer);
+    cells.addEventListener('click', gameFlowLogic.checkForBusy);
     cells.addEventListener('click', gameFlowLogic.checkForDraw);
     cells.addEventListener('click', gameFlowLogic.checkForWin);
     cells.addEventListener('click', gameFlowLogic.addMarker);
