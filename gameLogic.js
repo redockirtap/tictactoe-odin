@@ -1,6 +1,6 @@
-const Players = (name) => {
+const Players = (name, marker) => {
     const player = name || 'John Doe';
-    const marker = null;
+    // const marker = marker || null;
     const gameStat = []; // to add wins and loses
     return {player, gameStat, marker};
 }
@@ -9,17 +9,12 @@ const gameBoard = (() => {
     const _board = [null, null, null, null, null, null, null, null, null];
 
     const getBoard = () => [..._board];
-    console.log(typeof [..._board], [..._board]);
-    const _addMarker = (e) => { // adds marker to the board, if it is available
-        const chosenCell = e.target;
-        const cellIndex = Number(chosenCell.className.at(-1));
-        if (chosenCell === e.currentTarget) return;
-        if (gameBoard.getBoard()[cellIndex] !== null) return;
-        gameBoard.getBoard()[cellIndex] = 'x';
-        chosenCell.textContent = 'x';
-        console.log(gameBoard.getBoard())
-    }
-    return {getBoard, _addMarker};
+    const addMarker = (position, marker) => {_board[position] = marker, console.log(_board)};
+    const isDraw = () => _board.every((cell) => cell !== null);
+    const isWin = (marker) => {console.log("is Win?")};
+    const reset = () => _board.fill(null);
+    
+    return {getBoard, addMarker, isDraw, isWin, reset};
 })();
 
 const displayControl = (() => {
@@ -31,34 +26,47 @@ const displayControl = (() => {
 })();
 
 const gameFlowLogic = (() => {
-    const _button = document.querySelector('.buttonz');
-    const _cells = document.querySelector('.board');
-
-    const _choosePlayer = function (e) { // choose player vs player or player vs AI
+    const choosePlayer = function (e) { // choose player vs player or player vs AI
         const chosenPlayer = e.target || null; // select player buttons
         console.log('choosing game mode...')
         if (chosenPlayer === null || chosenPlayer.className === 'play') return; // OR if button play game is clicked
-        const player1 = Players('user');
-        const player2 = Players(chosenPlayer.textContent);
+        const player1 = Players('user', 'x');
+        const player2 = Players(chosenPlayer.textContent, 'o');
         console.log(player1, player2);
+        return {player1, player2}
     };
+    const checkForDraw = () => gameBoard.isDraw() ? gameBoard.reset() : false;
+    const checkForWin = () => gameBoard.isWin() ? gameBoard.reset() : false;
+    const addMarker = (e, position=Number(e.target.className.at(-1)), marker='x') => gameBoard.addMarker(position, marker);
 
-    const _isOver = () => { // checks if game is finished after each step
-        if (!_board.includes(null)) return;
-        console.log(gameBoard._board);
-    }
-
-    // const _addMarker = (e) => { // adds marker to the board, if it is available
-    //     const chosenCell = e.target;
-    //     const cellIndex = Number(chosenCell.className.at(-1));
-    //     if (chosenCell === e.currentTarget) return;
-    //     if (gameBoard._board[cellIndex] !== null) return;
-    //     gameBoard._board[cellIndex] = 'x';
-    //     chosenCell.textContent = 'x';
-    // }
-
-    
-    // console.log(gameBoard.getBoard())
-    _button.addEventListener('click', _choosePlayer);
-    _cells.addEventListener('click', gameBoard._addMarker);
+    return {choosePlayer, checkForDraw, checkForWin, addMarker};
 })(Players, gameBoard, displayControl);
+
+const eventListeners =(() => {
+    const buttons = document.querySelector('.buttonz');
+    const cells = document.querySelector('.board');
+
+    buttons.addEventListener('click', gameFlowLogic.choosePlayer);
+    cells.addEventListener('click', gameFlowLogic.checkForDraw);
+    cells.addEventListener('click', gameFlowLogic.checkForWin);
+    cells.addEventListener('click', gameFlowLogic.addMarker);
+})();
+
+
+
+
+// const _isOver = () => { // checks if game is finished after each step
+//     if (!_board.includes(null)) return;
+//     console.log(gameBoard._board);
+// }
+
+
+// const _addMarker = (e) => { // adds marker to the board, if it is available
+//     const chosenCell = e.target;
+//     const cellIndex = Number(chosenCell.className.at(-1));
+//     if (chosenCell === e.currentTarget) return;
+//     if (gameBoard.getBoard()[cellIndex] !== null) return;
+//     gameBoard.getBoard()[cellIndex] = 'x';
+//     chosenCell.textContent = 'x';
+//     console.log(gameBoard.getBoard())
+// }
