@@ -13,9 +13,9 @@ const gameBoard = (() => {
     const isDraw = () => _board.every((cell) => cell !== null);
     const isWin = (marker) => {console.log("is Win?")};
     const isBusy = (position) => _board[position] !== null;
-    const reset = () => _board.fill(null);
+    const cleanBoard = () => _board.fill(null);
     
-    return {getBoard, addMarker, isDraw, isWin, isBusy, reset};
+    return {getBoard, addMarker, isDraw, isWin, isBusy, cleanBoard};
 })();
 
 const displayControl = (() => {
@@ -24,7 +24,13 @@ const displayControl = (() => {
         const chosenCell = e.target
         chosenCell.textContent = marker;
     }
-    return {showMarker};
+    const cleanBoard = () => {
+        const display = document.querySelectorAll('.cells');
+        for (let i = 0; i < 9; i++) {
+            display[i].textContent = '';
+        }
+    }
+    return {showMarker, cleanBoard};
 })();
 
 const gameFlowLogic = (() => {
@@ -37,14 +43,23 @@ const gameFlowLogic = (() => {
         console.log(player1, player2);
         return {player1, player2}
     };
-    const checkForDraw = () => gameBoard.isDraw() ? gameBoard.reset() : false;
-    const checkForWin = () => gameBoard.isWin() ? gameBoard.reset() : false;
+    const checkForDraw = () => gameBoard.isDraw() ? gameBoard.cleanBoard() : false;
+    const checkForWin = () => gameBoard.isWin() ? gameBoard.cleanBoard() : false;
     const checkForBusy = (position) => gameBoard.isBusy(position) ? true : false;
     const addMarker = (e, position=Number(e.target.className.at(-1)), marker='x') => {
         if (checkForBusy(position)) return;
+        if (checkForWin()) return;
+        if (checkForDraw()) return;
         gameBoard.addMarker(position, marker);
-        displayControl.showMarker(e, marker)};
-    return {choosePlayer, checkForDraw, checkForWin, checkForBusy, addMarker};
+        displayControl.showMarker(e, marker)
+    };
+    const cleanBoard = () => {
+        // if (!checkForWin()) return;
+        if (!checkForDraw()) return;
+        gameBoard.cleanBoard();
+        displayControl.cleanBoard();
+    }
+    return {choosePlayer, checkForDraw, checkForWin, checkForBusy, addMarker, cleanBoard};
 })(Players, gameBoard, displayControl);
 
 const eventListenerz =(() => {
@@ -52,9 +67,8 @@ const eventListenerz =(() => {
     const cells = document.querySelector('.board');
 
     buttons.addEventListener('click', gameFlowLogic.choosePlayer);
-    cells.addEventListener('click', gameFlowLogic.checkForDraw);
-    cells.addEventListener('click', gameFlowLogic.checkForWin);
     cells.addEventListener('click', gameFlowLogic.addMarker);
+    cells.addEventListener('click', gameFlowLogic.cleanBoard);
 })();
 
 
