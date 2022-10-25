@@ -11,7 +11,16 @@ const gameBoard = (() => {
     const getBoard = () => [..._board];
     const addMarker = (position, marker) => {_board[position] = marker, console.log(_board)};
     const isDraw = () => _board.every((cell) => cell !== null);
-    const isWin = (marker) => {console.log("is Win?")};
+    const isWin = (marker) => {
+        if (_board[0] === marker && _board[1] === marker && _board[2] === marker 
+            || _board[3] === marker && _board[4] === marker && _board[5] === marker
+            || _board[6] === marker && _board[7] === marker && _board[8] === marker) return true;
+        if (_board[0] === marker && _board[3] === marker && _board[6] === marker 
+            || _board[1] === marker && _board[4] === marker && _board[7] === marker
+            || _board[2] === marker && _board[5] === marker && _board[8] === marker) return true;
+        if (_board[2] === marker && _board[4] === marker && _board[6] === marker) return true;
+        if (_board[0] === marker && _board[4] === marker && _board[8] === marker) return true;
+        };
     const isBusy = (position) => _board[position] !== null;
     const cleanBoard = () => _board.fill(null);
     
@@ -43,23 +52,18 @@ const gameFlowLogic = (() => {
         console.log(player1, player2);
         return {player1, player2}
     };
-    const checkForDraw = () => gameBoard.isDraw() ? gameBoard.cleanBoard() : false;
-    const checkForWin = () => gameBoard.isWin() ? gameBoard.cleanBoard() : false;
+    const checkForDraw = () => gameBoard.isDraw() ? gameBoard.cleanBoard() && displayControl.cleanBoard() : false;
+    const checkForWin = (marker) => gameBoard.isWin(marker) ? gameBoard.cleanBoard() && displayControl.cleanBoard() : false;
     const checkForBusy = (position) => gameBoard.isBusy(position) ? true : false;
     const addMarker = (e, position=Number(e.target.className.at(-1)), marker='x') => {
         if (checkForBusy(position)) return;
-        if (checkForWin()) return;
-        if (checkForDraw()) return;
         gameBoard.addMarker(position, marker);
-        displayControl.showMarker(e, marker)
+        displayControl.showMarker(e, marker);
+        if (checkForWin(marker)) return;
+        if (checkForDraw()) return;
+        // gameBoard.addMarker(position, marker);
     };
-    const cleanBoard = () => {
-        // if (!checkForWin()) return;
-        if (!checkForDraw()) return;
-        gameBoard.cleanBoard();
-        displayControl.cleanBoard();
-    }
-    return {choosePlayer, checkForDraw, checkForWin, checkForBusy, addMarker, cleanBoard};
+    return {choosePlayer, checkForDraw, checkForWin, checkForBusy, addMarker};
 })(Players, gameBoard, displayControl);
 
 const eventListenerz =(() => {
@@ -68,7 +72,6 @@ const eventListenerz =(() => {
 
     buttons.addEventListener('click', gameFlowLogic.choosePlayer);
     cells.addEventListener('click', gameFlowLogic.addMarker);
-    cells.addEventListener('click', gameFlowLogic.cleanBoard);
 })();
 
 
@@ -89,3 +92,11 @@ const eventListenerz =(() => {
 //     chosenCell.textContent = 'x';
 //     console.log(gameBoard.getBoard())
 // }
+
+// const cleanBoard = () => {
+    //     console.log('hi')
+    //     // if (!checkForWin(marker)) return;
+    //     // // if (!checkForDraw()) return;
+    //     // gameBoard.cleanBoard();
+    //     // displayControl.cleanBoard();
+    // }
