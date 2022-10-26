@@ -1,8 +1,7 @@
 const Players = (name, marker) => {
     const player = name || 'John Doe';
     // const marker = marker || null;
-    const gameStat = []; // to add wins and loses
-    return {player, gameStat, marker};
+    return {player, marker};
 }
 
 const gameBoard = (() => {
@@ -43,34 +42,50 @@ const displayControl = (() => {
 })();
 
 const gameFlowLogic = (() => {
-    const choosePlayer = function (e) { // choose player vs player or player vs AI
+    let player1; // initialize players 
+    let player2;
+    let counter = 0; // counter for player turns
+    const gameStat = []; // to add wins and loses
+
+    const choosePlayerHandler = function (e) { // choose player vs player or player vs AI
         const chosenPlayer = e.target || null; // select player buttons
         console.log('choosing game mode...')
         if (chosenPlayer === null || chosenPlayer.className === 'play') return; // OR if button play game is clicked
-        const player1 = Players('user', 'x');
-        const player2 = Players(chosenPlayer.textContent, 'o');
+        // const player1 = Players('user', 'x');
+        // const player2 = Players(chosenPlayer.textContent, 'o');
+        player1 = Players('user', 'x');
+        player2 = Players(chosenPlayer.textContent, 'o');
         console.log(player1, player2);
-        return {player1, player2}
+        // return {player1, player2}
     };
+
+    const changeTurn = (position) => {
+        if (checkForBusy(position)) return;
+        let currentMarker; 
+        console.log(counter % 2 === 0);
+        counter % 2 === 0 ? currentMarker = player1.marker : currentMarker = player2.marker;
+        counter++;
+        return currentMarker;
+    }
+
     const checkForDraw = () => gameBoard.isDraw() ? gameBoard.cleanBoard() && displayControl.cleanBoard() : false;
     const checkForWin = (marker) => gameBoard.isWin(marker) ? gameBoard.cleanBoard() && displayControl.cleanBoard() : false;
     const checkForBusy = (position) => gameBoard.isBusy(position) ? true : false;
-    const addMarker = (e, position=Number(e.target.className.at(-1)), marker='x') => {
+    const addMarker = (e, position=Number(e.target.className.at(-1)), marker=changeTurn(position)) => {
         if (checkForBusy(position)) return;
         gameBoard.addMarker(position, marker);
         displayControl.showMarker(e, marker);
         if (checkForWin(marker)) return;
         if (checkForDraw()) return;
-        // gameBoard.addMarker(position, marker);
     };
-    return {choosePlayer, checkForDraw, checkForWin, checkForBusy, addMarker};
+    return {choosePlayerHandler, checkForDraw, checkForWin, checkForBusy, addMarker};
 })(Players, gameBoard, displayControl);
 
 const eventListenerz =(() => {
     const buttons = document.querySelector('.buttonz');
     const cells = document.querySelector('.board');
 
-    buttons.addEventListener('click', gameFlowLogic.choosePlayer);
+    buttons.addEventListener('click', gameFlowLogic.choosePlayerHandler);
     cells.addEventListener('click', gameFlowLogic.addMarker);
 })();
 
