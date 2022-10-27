@@ -2,23 +2,28 @@ const Players = (name, marker) => {
     const player = name || 'John Doe';
     // const marker = marker || null;
     return {player, marker};
-}
+};
 
 const gameBoard = (() => {
     const _board = [null, null, null, null, null, null, null, null, null];
+    const currentMovesX = [];
+    const currentMovesO = [];   
 
     const getBoard = () => [..._board];
     const addMarker = (position, marker) => {_board[position] = marker, console.log(_board)};
     const isDraw = () => _board.every((cell) => cell !== null);
-    const isWin = (marker) => {
-        if (_board[0] === marker && _board[1] === marker && _board[2] === marker 
-            || _board[3] === marker && _board[4] === marker && _board[5] === marker
-            || _board[6] === marker && _board[7] === marker && _board[8] === marker) return true;
-        if (_board[0] === marker && _board[3] === marker && _board[6] === marker 
-            || _board[1] === marker && _board[4] === marker && _board[7] === marker
-            || _board[2] === marker && _board[5] === marker && _board[8] === marker) return true;
-        if (_board[2] === marker && _board[4] === marker && _board[6] === marker) return true;
-        if (_board[0] === marker && _board[4] === marker && _board[8] === marker) return true;
+    const isWin = (player1, player2, marker, position) => {
+        let currentMarker;
+        // marker === player1.marker ? currentMarker = player1.marker : currentMarker = player2.marker;
+        // let winCombo = a;
+        // let winArr = _board.filter()
+        const combo = [_board.slice(0,3), _board.slice(3,6), _board.slice(6)]
+        const winConditionsHorizontal = [[0, 1, 2], [3, 4, 5], [6, 7, 8]];
+        const winConditionsVertical = [[0, 3, 6], [1, 4, 7], [2, 5, 8]];
+        marker === player1.marker ? currentMovesX.push(position) : currentMovesO.push(position);
+        
+        console.log(currentMovesX, currentMovesO);
+
         };
     const isBusy = (position) => _board[position] !== null;
     const cleanBoard = () => _board.fill(null);
@@ -62,23 +67,22 @@ const gameFlowLogic = (() => {
     const changeTurn = (position) => {
         if (checkForBusy(position)) return;
         let currentMarker; 
-        console.log(counter % 2 === 0);
         counter % 2 === 0 ? currentMarker = player1.marker : currentMarker = player2.marker;
         counter++;
         return currentMarker;
     }
 
     const checkForDraw = () => gameBoard.isDraw() ? gameBoard.cleanBoard() && displayControl.cleanBoard() : false;
-    const checkForWin = (marker) => gameBoard.isWin(marker) ? gameBoard.cleanBoard() && displayControl.cleanBoard() : false;
+    const checkForWin = (player1, player2, marker, position) => gameBoard.isWin(player1, player2, marker, position) ? gameBoard.cleanBoard() && displayControl.cleanBoard() : false;
     const checkForBusy = (position) => gameBoard.isBusy(position) ? true : false;
-    const addMarker = (e, position=Number(e.target.className.at(-1)), marker=changeTurn(position)) => {
-        if (checkForBusy(position)) return;
-        gameBoard.addMarker(position, marker);
-        displayControl.showMarker(e, marker);
-        if (checkForWin(marker)) return;
-        if (checkForDraw()) return;
+    const addMarkerHandler = (e, position=Number(e.target.className.at(-1)), marker=changeTurn(position)) => {
+        if (checkForBusy(position)) return; // check if cell is busy
+        gameBoard.addMarker(position, marker); // store marker to the board array
+        displayControl.showMarker(e, marker); // display the marker on the screen
+        if (checkForWin(player1, player2, marker, position)) return; // check if there is a win
+        if (checkForDraw()) return; // check if the game is over due to draw
     };
-    return {choosePlayerHandler, checkForDraw, checkForWin, checkForBusy, addMarker};
+    return {choosePlayerHandler, checkForDraw, checkForWin, checkForBusy, addMarkerHandler};
 })(Players, gameBoard, displayControl);
 
 const eventListenerz =(() => {
@@ -86,8 +90,31 @@ const eventListenerz =(() => {
     const cells = document.querySelector('.board');
 
     buttons.addEventListener('click', gameFlowLogic.choosePlayerHandler);
-    cells.addEventListener('click', gameFlowLogic.addMarker);
+    cells.addEventListener('click', gameFlowLogic.addMarkerHandler);
 })();
+
+
+
+
+
+        // const combo2 = [[_board[0], _board[3], _board[6]], [_board[1], _board[4], _board[7]], [_board[2], _board[5], _board[8]]]
+        // const combo3 = [_board[2], _board[4], _board[6]]
+        // const combo4 = [_board[0], _board[4], _board[8]]
+
+        // if (_board[0] === marker && _board[1] === marker && _board[2] === marker 
+        //     || _board[3] === marker && _board[4] === marker && _board[5] === marker
+        //     || _board[6] === marker && _board[7] === marker && _board[8] === marker) {
+                
+        //         return true
+        //     };
+        // if (_board[0] === marker && _board[3] === marker && _board[6] === marker 
+        //     || _board[1] === marker && _board[4] === marker && _board[7] === marker
+        //     || _board[2] === marker && _board[5] === marker && _board[8] === marker) return true;
+        // if (_board[2] === marker && _board[4] === marker && _board[6] === marker) return true;
+        // if (_board[0] === marker && _board[4] === marker && _board[8] === marker) return true;
+
+
+
 
 
 
