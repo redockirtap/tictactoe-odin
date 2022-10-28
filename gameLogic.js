@@ -21,8 +21,12 @@ const gameBoard = (() => {
         const winConditionsHorizontal = [[0, 1, 2], [3, 4, 5], [6, 7, 8]];
         const winConditionsVertical = [[0, 3, 6], [1, 4, 7], [2, 5, 8]];
         marker === player1.marker ? currentMovesX.push(position) : currentMovesO.push(position);
+        // winConditionsHorizontal.forEach(array => array.every((position, index) => position === currentMovesX[index]))
+        (winConditionsHorizontal.forEach(array => console.log(array.every((position, index) => position === currentMovesX[index]))))
+        // console.log(winConditionsHorizontal.forEach(array => console.log(array.includes(currentMovesX.values()))))
+        currentMovesX.sort(), currentMovesO.sort() 
+        console.log(currentMovesX.values(), currentMovesO)
         
-        console.log(currentMovesX, currentMovesO);
 
         };
     const isBusy = (position) => _board[position] !== null;
