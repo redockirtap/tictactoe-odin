@@ -13,24 +13,15 @@ const gameBoard = (() => {
     const addMarker = (position, marker) => {_board[position] = marker, console.log(_board)};
     const isDraw = () => _board.every((cell) => cell !== null);
     const isWin = (player1, player2, marker, position) => {
-        let currentMarker;
-        // marker === player1.marker ? currentMarker = player1.marker : currentMarker = player2.marker;
-        // let winCombo = a;
-        // let winArr = _board.filter()
-        const combo = [_board.slice(0,3), _board.slice(3,6), _board.slice(6)];
         const winConditionsHorizontal = [[0, 1, 2], [3, 4, 5], [6, 7, 8]];
         const winConditionsVertical = [[0, 3, 6], [1, 4, 7], [2, 5, 8]];
-        marker === player1.marker ? currentMovesX.push(position) : currentMovesO.push(position);
-        // winConditionsHorizontal.forEach(array => array.every((position, index) => position === currentMovesX[index]))
-        // winConditionsHorizontal.forEach(array => console.log(!array.some((position, index) => position === currentMovesX[index])))
-        console.log(currentMovesX.filter((position, index) => winConditionsHorizontal[index].flat() === position))
-        winConditionsHorizontal.includes((position) => position === currentMovesX)
-        // currentMovesX.includes((position) => )
-
-        currentMovesX.sort(), currentMovesO.sort()
-        console.log(currentMovesX, currentMovesO)
+        const winConditionsDiagonal = [[2, 4, 6], [0, 4, 8]];
+        const AllCombos = winConditionsHorizontal.concat(winConditionsVertical, winConditionsDiagonal); // concat all winning combos
+        const winCount = []; // to count bool values
         
+        marker === player1.marker ? currentMovesX.push(position) : currentMovesO.push(position); //where to push marker
 
+        return AllCombos.some((combo) => combo.every(cell => currentMovesX.includes(cell)))
         };
     const isBusy = (position) => _board[position] !== null;
     const cleanBoard = () => _board.fill(null);
@@ -101,8 +92,12 @@ const eventListenerz =(() => {
 })();
 
 
-
-
+// marker === player1.marker ? currentMarker = player1.marker : currentMarker = player2.marker;
+        // let winCombo = a;
+        // let winArr = _board.filter()
+        // winConditionsHorizontal.forEach(array => array.every((position, index) => position === currentMovesX[index]))
+        // winConditionsHorizontal.forEach(array => console.log(!array.some((position, index) => position === currentMovesX[index])))
+        // console.log(currentMovesX.filter((position, index) => winConditionsHorizontal[index].flat() === position))
 
         // const combo2 = [[_board[0], _board[3], _board[6]], [_board[1], _board[4], _board[7]], [_board[2], _board[5], _board[8]]]
         // const combo3 = [_board[2], _board[4], _board[6]]
