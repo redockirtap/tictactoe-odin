@@ -6,8 +6,8 @@ const Players = (name, marker) => {
 
 const gameBoard = (() => {
     const _board = [null, null, null, null, null, null, null, null, null];
-    const currentMovesX = [];
-    const currentMovesO = [];   
+    let currentMovesX = [];
+    let currentMovesO = [];   
 
     const getBoard = () => [..._board];
     const addMarker = (position, marker) => {_board[position] = marker, console.log(_board)};
@@ -17,11 +17,16 @@ const gameBoard = (() => {
         const winConditionsVertical = [[0, 3, 6], [1, 4, 7], [2, 5, 8]];
         const winConditionsDiagonal = [[2, 4, 6], [0, 4, 8]];
         const AllCombos = winConditionsHorizontal.concat(winConditionsVertical, winConditionsDiagonal); // concat all winning combos
-        const winCount = []; // to count bool values
-        
+        // const winCount = []; 
         marker === player1.marker ? currentMovesX.push(position) : currentMovesO.push(position); //where to push marker
-
-        return AllCombos.some((combo) => combo.every(cell => currentMovesX.includes(cell)))
+        if (AllCombos.some(combo => combo.every(cell => currentMovesX.includes(cell)))
+        || AllCombos.some(combo => combo.every(cell => currentMovesO.includes(cell)))) {
+            currentMovesX = [];
+            currentMovesO = [];
+            console.log('yoo')
+            return true;
+        }
+        return false;
         };
     const isBusy = (position) => _board[position] !== null;
     const cleanBoard = () => _board.fill(null);
