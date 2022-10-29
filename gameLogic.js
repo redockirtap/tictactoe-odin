@@ -17,15 +17,18 @@ const gameBoard = (() => {
         // marker === player1.marker ? currentMarker = player1.marker : currentMarker = player2.marker;
         // let winCombo = a;
         // let winArr = _board.filter()
-        const combo = [_board.slice(0,3), _board.slice(3,6), _board.slice(6)]
+        const combo = [_board.slice(0,3), _board.slice(3,6), _board.slice(6)];
         const winConditionsHorizontal = [[0, 1, 2], [3, 4, 5], [6, 7, 8]];
         const winConditionsVertical = [[0, 3, 6], [1, 4, 7], [2, 5, 8]];
         marker === player1.marker ? currentMovesX.push(position) : currentMovesO.push(position);
         // winConditionsHorizontal.forEach(array => array.every((position, index) => position === currentMovesX[index]))
-        (winConditionsHorizontal.forEach(array => console.log(array.every((position, index) => position === currentMovesX[index]))))
-        // console.log(winConditionsHorizontal.forEach(array => console.log(array.includes(currentMovesX.values()))))
-        currentMovesX.sort(), currentMovesO.sort() 
-        console.log(currentMovesX.values(), currentMovesO)
+        // winConditionsHorizontal.forEach(array => console.log(!array.some((position, index) => position === currentMovesX[index])))
+        console.log(currentMovesX.filter((position, index) => winConditionsHorizontal[index].flat() === position))
+        winConditionsHorizontal.includes((position) => position === currentMovesX)
+        // currentMovesX.includes((position) => )
+
+        currentMovesX.sort(), currentMovesO.sort()
+        console.log(currentMovesX, currentMovesO)
         
 
         };
