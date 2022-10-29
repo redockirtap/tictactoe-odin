@@ -6,8 +6,11 @@
 :root {
     box-sizing: border-box;
     font-family: Inconsolata, 'Courier New', Courier, monospace;
+    font-size: 24px;
     --main-bg-color: #141415;
+    --main-bg-color2:#08031F;
     --main-color: rgb(243, 236, 236);
+    --accent1: #0d1e81;
     cursor: default;
     user-select: none;
 }
@@ -45,8 +48,6 @@ footer {
     justify-items: center;
     grid-template-rows: repeat(3, 1fr);
     grid-template-columns: repeat(3, 1fr);
-
-    /* styling */
     border-radius: 24px;
     box-shadow: 1px 1px 6px rgb(65, 65, 65);
 }
@@ -80,4 +81,54 @@ footer {
 
 .cells.board-cell-8 {
     border-bottom-right-radius: 24px;
+}
+
+
+/* menu and buttonz styling */
+
+dialog {
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 30%;
+    height: 55%;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    border: 3px solid var(--accent1);
+    border-radius: 24px;
+
+    background-color: var(--main-bg-color2);
+    color: var(--main-color);
+}
+
+button {
+    outline: none;
+    background-color: transparent;
+    width: 100px;
+    height: 55px;
+    color: var(--main-color);
+    border: 3px solid var(--accent1);
+    border-radius: 24px;
+    cursor: pointer;
+    transition: 0.4s;
+}
+
+button:hover {
+    background-color: var(--accent1);
+    text-shadow: 1px 1px 1px rgb(31, 29, 29);
+
+}
+
+button:active {
+    border: 5px solid var(--main-color);
+}
+
+:disabled:hover {
+    cursor: not-allowed;
+    background-color: rgba(255, 0, 0, 0.396);
+    border: rgba(255, 0, 0, 0.396);
 }

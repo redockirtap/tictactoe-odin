@@ -11,18 +11,21 @@
     <title>Tic Tac Toe</title>
 </head>
 <body>
-    <main>
-        <section class="start modal vs mode">
-            <dialog id="start">
-                <p>Human opponent or AI?</p>
-                <button class="players-vs-ai">
+    <section class="start modal vs mode">
+        <dialog id="start" open>
+            <p>Human opponent or AI?</p>
+            <div class="buttons-container">
+                <button id="second-player" class="players-vs-ai">
                     Human
                 </button>
-                <button class="players-vs-ai">
+                <button id="AI" class="players-vs-ai" disabled>
                     Skynet
-                </button>
-            </dialog>
-        </section>
+            </div>
+            </button>
+        </dialog>
+    </section>
+    <main>
+        
         <div class="board">
             <div class="cells board-cell-0"></div>
             <div class="cells board-cell-1"></div>
