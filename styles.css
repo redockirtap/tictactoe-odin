@@ -103,6 +103,7 @@ dialog {
 
     background-color: var(--main-bg-color2);
     color: var(--main-color);
+    box-shadow: 2px 2px 3px var(--main-bg-color2);
 }
 
 button {
@@ -114,7 +115,7 @@ button {
     border: 3px solid var(--accent1);
     border-radius: 24px;
     cursor: pointer;
-    transition: 0.4s;
+    transition: 0.2s;
 }
 
 button:hover {

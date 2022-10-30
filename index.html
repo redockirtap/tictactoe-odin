@@ -12,16 +12,13 @@
 </head>
 <body>
     <section class="start modal vs mode">
-        <dialog id="start" open>
+        <dialog id="start">
             <p>Human opponent or AI?</p>
-            <div class="buttons-container">
-                <button id="second-player" class="players-vs-ai">
-                    Human
-                </button>
-                <button id="AI" class="players-vs-ai" disabled>
-                    Skynet
+            <div class="buttonz">
+                <button id="second-player" class="players-vs-ai">Human</button>
+                <button id="AI" class="players-vs-ai" disabled>Skynet</button>
+                <button id="play" class="play">play</button>
             </div>
-            </button>
         </dialog>
     </section>
     <main>
@@ -37,10 +34,9 @@
             <div class="cells board-cell-7"></div>
             <div class="cells board-cell-8"></div>
         </div>
-        <div class="buttonz">
-            <button class="AI">AI</button>
-            <button class="2 player">2 player</button>
-            <button class="play">play</button>
+        <div class="buttonz reset-button">
+            <!-- <button class="AI">AI</button> -->
+            <button class="reset">reset</button>
         </div>
     </main>
     <footer>Foot</footer>

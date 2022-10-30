@@ -21,7 +21,7 @@ const gameBoard = (() => {
         || AllCombos.some(combo => combo.every(cell => currentMovesO.includes(cell)))) {
             currentMovesX = [];
             currentMovesO = [];
-            console.log('yoo');
+            console.log(`${marker} won`);
             return true;
         }
         return false;
@@ -44,7 +44,12 @@ const displayControl = (() => {
             display[i].textContent = '';
         }
     }
-    return {showMarker, cleanBoard};
+
+    const hideMenu = () => {
+        const menu = document.querySelector('dialog');
+        menu.style.display = "none";
+    }
+    return {showMarker, cleanBoard, hideMenu};
 })();
 
 const gameFlowLogic = (() => {
@@ -52,15 +57,7 @@ const gameFlowLogic = (() => {
     let player2;
     let counter = 0; // counter for player turns
     // const gameStat = []; // to add wins and loses
-
-    const choosePlayerHandler = function (e) { // choose player vs player or player vs AI
-        const chosenPlayer = e.target || null; // select player buttons
-        console.log('choosing game mode...')
-        if (chosenPlayer === null || chosenPlayer.className === 'play') return; // OR if button play game is clicked
-        player1 = Players('user', 'x');
-        player2 = Players(chosenPlayer.textContent, 'o');
-        console.log(player1, player2);
-    };
+    
 
     const changeTurn = (position) => {
         if (checkForBusy(position)) return;
@@ -70,74 +67,51 @@ const gameFlowLogic = (() => {
         return currentMarker;
     }
 
+    const choosePlayer = function (e) { // choose player vs player or player vs AI
+        const chosenButton = e.target || null; // select player buttons
+        if (chosenButton === null || chosenButton.className === 'play') return; // OR if button play game is clicked
+        player1 = Players('user', 'x');
+        player2 = Players(chosenButton.textContent, 'o');
+    };
+
+    const startGame = function (e) { // choose player vs player or player vs AI
+        const chosenButton = e.target || null; // select player buttons
+        console.log(player2)
+        if (chosenButton.className === 'play' && player2) displayControl.hideMenu();
+    };
+    const startGameHandler = (e) => {
+        choosePlayer(e);
+        startGame(e);
+    }
     const checkForDraw = () => gameBoard.isDraw() ? gameBoard.cleanBoard() && displayControl.cleanBoard() : false;
     const checkForWin = (player1, marker, position) => gameBoard.isWin(player1, marker, position) ? gameBoard.cleanBoard() && displayControl.cleanBoard() : false;
     const checkForBusy = (position) => gameBoard.isBusy(position) ? true : false;
-    const addMarkerHandler = (e, position=Number(e.target.className.at(-1)), marker=changeTurn(position)) => {
+    const addMarkerHandler = (e) => {
+        const position = Number(e.target.className.at(-1));
+        const marker = changeTurn(position);
         if (checkForBusy(position)) return; // check if cell is busy
         gameBoard.addMarker(position, marker); // store marker to the board array
         displayControl.showMarker(e, marker); // display the marker on the screen
         if (checkForWin(player1, marker, position)) return; // check if there is a win
         if (checkForDraw()) return; // check if the game is over due to draw
     };
-    return {choosePlayerHandler, checkForDraw, checkForWin, checkForBusy, addMarkerHandler};
+    return {player2, startGameHandler, checkForDraw, checkForWin, checkForBusy, addMarkerHandler};
 })(Players, gameBoard, displayControl);
 
 const eventListenerz =(() => {
     const buttons = document.querySelector('.buttonz');
     const cells = document.querySelector('.board');
 
-    buttons.addEventListener('click', gameFlowLogic.choosePlayerHandler);
+    buttons.addEventListener('click', gameFlowLogic.startGameHandler);
+    // buttons.addEventListener('click', gameFlowLogic.choosePlayerHandler);
     cells.addEventListener('click', gameFlowLogic.addMarkerHandler);
 })();
 
 
-// marker === player1.marker ? currentMarker = player1.marker : currentMarker = player2.marker;
-        // let winCombo = a;
-        // let winArr = _board.filter()
-        // winConditionsHorizontal.forEach(array => array.every((position, index) => position === currentMovesX[index]))
-        // winConditionsHorizontal.forEach(array => console.log(!array.some((position, index) => position === currentMovesX[index])))
-        // console.log(currentMovesX.filter((position, index) => winConditionsHorizontal[index].flat() === position))
-
-        // const combo2 = [[_board[0], _board[3], _board[6]], [_board[1], _board[4], _board[7]], [_board[2], _board[5], _board[8]]]
-        // const combo3 = [_board[2], _board[4], _board[6]]
-        // const combo4 = [_board[0], _board[4], _board[8]]
-
-        // if (_board[0] === marker && _board[1] === marker && _board[2] === marker 
-        //     || _board[3] === marker && _board[4] === marker && _board[5] === marker
-        //     || _board[6] === marker && _board[7] === marker && _board[8] === marker) return true
-        // if (_board[0] === marker && _board[3] === marker && _board[6] === marker 
-        //     || _board[1] === marker && _board[4] === marker && _board[7] === marker
-        //     || _board[2] === marker && _board[5] === marker && _board[8] === marker) return true;
-        // if (_board[2] === marker && _board[4] === marker && _board[6] === marker) return true;
-        // if (_board[0] === marker && _board[4] === marker && _board[8] === marker) return true;
-
-
-
-
-
-
-
-// const _isOver = () => { // checks if game is finished after each step
-//     if (!_board.includes(null)) return;
-//     console.log(gameBoard._board);
-// }
-
-
-// const _addMarker = (e) => { // adds marker to the board, if it is available
-//     const chosenCell = e.target;
-//     const cellIndex = Number(chosenCell.className.at(-1));
-//     if (chosenCell === e.currentTarget) return;
-//     if (gameBoard.getBoard()[cellIndex] !== null) return;
-//     gameBoard.getBoard()[cellIndex] = 'x';
-//     chosenCell.textContent = 'x';
-//     console.log(gameBoard.getBoard())
-// }
-
-// const cleanBoard = () => {
-    //     console.log('hi')
-    //     // if (!checkForWin(marker)) return;
-    //     // // if (!checkForDraw()) return;
-    //     // gameBoard.cleanBoard();
-    //     // displayControl.cleanBoard();
-    // }
+// const choosePlayerHandler = function (e) { // choose player vs player or player vs AI
+//     const chosenPlayer = e.target || null; // select player buttons
+//     if (chosenPlayer === null || chosenPlayer.className === 'play') return; // OR if button play game is clicked
+//     player1 = Players('user', 'x');
+//     player2 = Players(chosenPlayer.textContent, 'o');
+//     console.log(player1, player2);
+// };
