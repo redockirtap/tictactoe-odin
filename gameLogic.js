@@ -44,10 +44,11 @@ const displayControl = (() => {
             display[i].textContent = '';
         }
     }
-
     const hideMenu = () => {
         const menu = document.querySelector('dialog');
+        const board = document.querySelector('main');
         menu.style.display = "none";
+        board.style.display = "flex";
     }
     return {showMarker, cleanBoard, hideMenu};
 })();
@@ -56,17 +57,8 @@ const gameFlowLogic = (() => {
     let player1; // initialize players 
     let player2;
     let counter = 0; // counter for player turns
-    // const gameStat = []; // to add wins and loses
-    
 
-    const changeTurn = (position) => {
-        if (checkForBusy(position)) return;
-        let currentMarker; 
-        counter % 2 === 0 ? currentMarker = player1.marker : currentMarker = player2.marker;
-        counter++;
-        return currentMarker;
-    }
-
+    // START GAME LOGIC
     const choosePlayer = function (e) { // choose player vs player or player vs AI
         const chosenButton = e.target || null; // select player buttons
         if (chosenButton === null || chosenButton.className === 'play') return; // OR if button play game is clicked
@@ -79,13 +71,24 @@ const gameFlowLogic = (() => {
         console.log(player2)
         if (chosenButton.className === 'play' && player2) displayControl.hideMenu();
     };
+
     const startGameHandler = (e) => {
         choosePlayer(e);
         startGame(e);
     }
+
+    // GAME FLOW LOGIC
+    const changeTurn = (position) => {
+        if (checkForBusy(position)) return;
+        let currentMarker; 
+        counter % 2 === 0 ? currentMarker = player1.marker : currentMarker = player2.marker;
+        counter++;
+        return currentMarker;
+    }
     const checkForDraw = () => gameBoard.isDraw() ? gameBoard.cleanBoard() && displayControl.cleanBoard() : false;
     const checkForWin = (player1, marker, position) => gameBoard.isWin(player1, marker, position) ? gameBoard.cleanBoard() && displayControl.cleanBoard() : false;
     const checkForBusy = (position) => gameBoard.isBusy(position) ? true : false;
+    
     const addMarkerHandler = (e) => {
         const position = Number(e.target.className.at(-1));
         const marker = changeTurn(position);
@@ -103,15 +106,6 @@ const eventListenerz =(() => {
     const cells = document.querySelector('.board');
 
     buttons.addEventListener('click', gameFlowLogic.startGameHandler);
-    // buttons.addEventListener('click', gameFlowLogic.choosePlayerHandler);
     cells.addEventListener('click', gameFlowLogic.addMarkerHandler);
 })();
 
-
-// const choosePlayerHandler = function (e) { // choose player vs player or player vs AI
-//     const chosenPlayer = e.target || null; // select player buttons
-//     if (chosenPlayer === null || chosenPlayer.className === 'play') return; // OR if button play game is clicked
-//     player1 = Players('user', 'x');
-//     player2 = Players(chosenPlayer.textContent, 'o');
-//     console.log(player1, player2);
-// };

@@ -24,11 +24,13 @@ html, body {
 main {
     height: 100vh;
     max-width: 100%;
-    display: flex;
+    display: none;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background-image: url("images/waves.svg");
+    gap: 1rem;
+    /* background-image: url("images/waves.svg"); */
+    background-color: var(--main-bg-color2);
     background-repeat: no-repeat;
     background-size: contain;
     background-position: right;
@@ -42,7 +44,7 @@ footer {
 .board {
     width: 500px;
     height: 500px;
-    background-color: darkslategrey;
+    background-color: var(--accent1);
     display: grid;
     align-items: center;
     justify-items: center;
@@ -57,14 +59,20 @@ footer {
     transition: 0.4s;
 }
 
+.cells:active {
+    border: 2px solid rgba(44, 19, 156, 0.772);
+    background-color: rgb(24, 84, 180);
+    transition: 0.1s;
+}
+
 .cells {
-    border: 0.5px solid rgba(100, 100, 100, 0.677);
+    border: 0.5px solid var(--main-bg-color2);
     display: flex;
     justify-content: center;
     align-items: center;
     width: 100%;
     height: 100%;
-    font-size: 72px;
+    font-size: 94px;
 }
 
 .cells.board-cell-0 {
@@ -132,4 +140,12 @@ button:active {
     cursor: not-allowed;
     background-color: rgba(255, 0, 0, 0.396);
     border: rgba(255, 0, 0, 0.396);
+}
+
+.buttonz {
+    text-align: center;
+}
+
+#play {
+    margin-top: 1rem;
 }
