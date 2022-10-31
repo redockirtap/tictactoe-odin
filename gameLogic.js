@@ -10,13 +10,18 @@ const gameBoard = (() => {
 
     const getBoard = () => [..._board];
     const addMarker = (position, marker) => {_board[position] = marker, console.log(_board)};
-    const isDraw = () => _board.every((cell) => cell !== null);
+    const isDraw = () => {
+        currentMovesO = [];
+        currentMovesX = [];
+        return _board.every((cell) => cell !== null);
+    };
     const isWin = (player1, marker, position) => {
         const winConditionsHorizontal = [[0, 1, 2], [3, 4, 5], [6, 7, 8]];
         const winConditionsVertical = [[0, 3, 6], [1, 4, 7], [2, 5, 8]];
         const winConditionsDiagonal = [[2, 4, 6], [0, 4, 8]];
         const AllCombos = winConditionsHorizontal.concat(winConditionsVertical, winConditionsDiagonal); // concat all winning combos
         marker === player1.marker ? currentMovesX.push(position) : currentMovesO.push(position); //where to push marker
+        (AllCombos.some(combo => (combo.every(cell => console.log(currentMovesX.includes(cell), currentMovesO.includes(cell), combo)))))
         if (AllCombos.some(combo => combo.every(cell => currentMovesX.includes(cell)))
         || AllCombos.some(combo => combo.every(cell => currentMovesO.includes(cell)))) {
             currentMovesX = [];
@@ -35,7 +40,7 @@ const gameBoard = (() => {
 const displayControl = (() => {
 
     const showMarker = (e, marker) => {
-        const chosenCell = e.target
+        const chosenCell = e.target;
         chosenCell.textContent = marker;
     }
     const cleanBoard = () => {
@@ -49,6 +54,10 @@ const displayControl = (() => {
         const board = document.querySelector('main');
         menu.style.display = "none";
         board.style.display = "flex";
+    }
+
+    const displayPlayButton = () => {
+
     }
     return {showMarker, cleanBoard, hideMenu};
 })();
@@ -69,6 +78,7 @@ const gameFlowLogic = (() => {
     const startGame = function (e) { // choose player vs player or player vs AI
         const chosenButton = e.target || null; // select player buttons
         console.log(player2)
+        if (!player2) displayControl.displayPlayButton();
         if (chosenButton.className === 'play' && player2) displayControl.hideMenu();
     };
 
@@ -86,7 +96,8 @@ const gameFlowLogic = (() => {
         return currentMarker;
     }
     const checkForDraw = () => gameBoard.isDraw() ? gameBoard.cleanBoard() && displayControl.cleanBoard() : false;
-    const checkForWin = (player1, marker, position) => gameBoard.isWin(player1, marker, position) ? gameBoard.cleanBoard() && displayControl.cleanBoard() : false;
+    const checkForWin = (player1, marker, position) => gameBoard.isWin(player1, marker, position) ? gameBoard.cleanBoard() 
+                                                                                                    && displayControl.cleanBoard() : false;
     const checkForBusy = (position) => gameBoard.isBusy(position) ? true : false;
     
     const addMarkerHandler = (e) => {
