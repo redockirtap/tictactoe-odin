@@ -56,10 +56,11 @@ const displayControl = (() => {
         board.style.display = "flex";
     }
 
-    const displayPlayButton = () => {
-
+    const displayPlayButton = (player2) => {
+        const playButton = document.querySelector('#play');
+        if (player2) playButton.removeAttribute('disabled');
     }
-    return {showMarker, cleanBoard, hideMenu};
+    return {showMarker, cleanBoard, hideMenu, displayPlayButton};
 })();
 
 const gameFlowLogic = (() => {
@@ -77,8 +78,7 @@ const gameFlowLogic = (() => {
 
     const startGame = function (e) { // choose player vs player or player vs AI
         const chosenButton = e.target || null; // select player buttons
-        console.log(player2)
-        if (!player2) displayControl.displayPlayButton();
+        if (player2) displayControl.displayPlayButton(player2);
         if (chosenButton.className === 'play' && player2) displayControl.hideMenu();
     };
 
