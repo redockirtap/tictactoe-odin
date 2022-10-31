@@ -9,30 +9,27 @@ const gameBoard = (() => {
     let currentMovesO = [];   
 
     const getBoard = () => [..._board];
-    const addMarker = (position, marker) => {_board[position] = marker, console.log(_board)};
-    const isDraw = () => {
-        // currentMovesO = [];
-        // currentMovesX = [];
-        if (_board.every((cell) => cell !== null)) return [currentMovesO = [], currentMovesX = []];
-    };
+    const addMarker = (position, marker) => {_board[position] = marker};
+    const isDraw = () => _board.every((cell) => cell !== null);
     const isWin = (player1, marker, position) => {
         const winConditionsHorizontal = [[0, 1, 2], [3, 4, 5], [6, 7, 8]];
         const winConditionsVertical = [[0, 3, 6], [1, 4, 7], [2, 5, 8]];
         const winConditionsDiagonal = [[2, 4, 6], [0, 4, 8]];
         const AllCombos = winConditionsHorizontal.concat(winConditionsVertical, winConditionsDiagonal); // concat all winning combos
         marker === player1.marker ? currentMovesX.push(position) : currentMovesO.push(position); //where to push marker
-        (AllCombos.some(combo => (combo.every(cell => console.log(currentMovesX.includes(cell), currentMovesO.includes(cell), combo)))))
         if (AllCombos.some(combo => combo.every(cell => currentMovesX.includes(cell)))
         || AllCombos.some(combo => combo.every(cell => currentMovesO.includes(cell)))) {
-            currentMovesX = [];
-            currentMovesO = [];
             console.log(`${marker} won`);
             return true;
         }
         return false;
         };
     const isBusy = (position) => _board[position] !== null;
-    const cleanBoard = () => _board.fill(null);
+    const cleanBoard = () => {
+        currentMovesX = [];
+        currentMovesO = [];
+        return _board.fill(null);
+    }
     
     return {getBoard, addMarker, isDraw, isWin, isBusy, cleanBoard};
 })();
@@ -56,11 +53,19 @@ const displayControl = (() => {
         board.style.display = "flex";
     }
 
-    const displayPlayButton = (player2) => {
-        const playButton = document.querySelector('#play');
-        if (player2) playButton.removeAttribute('disabled');
+    const showMenu = () => {
+        const menu = document.querySelector('dialog');
+        const board = document.querySelector('main');
+        menu.style.display = "flex";
+        board.style.display = "none";
     }
-    return {showMarker, cleanBoard, hideMenu, displayPlayButton};
+
+    const togglePlayButton = (player2) => {
+        const playButton = document.querySelector('#play');
+        if (player2 && playButton.hasAttribute("disabled")) playButton.removeAttribute('disabled');
+        if (!player2 && !(playButton.hasAttribute("disabled"))) playButton.setAttribute('disabled', '');
+    }
+    return {showMarker, cleanBoard, hideMenu, showMenu, togglePlayButton};
 })();
 
 const gameFlowLogic = (() => {
@@ -68,22 +73,35 @@ const gameFlowLogic = (() => {
     let player2;
     let counter = 0; // counter for player turns
 
-    // START GAME LOGIC
+    // START AND END GAME LOGIC
     const choosePlayer = function (e) { // choose player vs player or player vs AI
         const chosenButton = e.target || null; // select player buttons
-        if (chosenButton === null || chosenButton.className === 'play') return; // OR if button play game is clicked
+        if (chosenButton.className !== "players-vs-ai") return; // OR if button play game is clicked
         player1 = Players('user', 'x');
         player2 = Players(chosenButton.textContent, 'o');
     };
 
     const startGame = function (e) { // choose player vs player or player vs AI
         const chosenButton = e.target || null; // select player buttons
-        if (player2) displayControl.displayPlayButton(player2);
+        if (player2) displayControl.togglePlayButton(player2);
         if (chosenButton.className === 'play' && player2) displayControl.hideMenu();
     };
 
+    const resetGame = (e) => {
+        const chosenButton = e.target || null;
+        if (chosenButton.className === 'reset') {
+            player2 = undefined;
+            gameBoard.cleanBoard();
+            displayControl.cleanBoard();
+            displayControl.togglePlayButton();
+            displayControl.showMenu();
+        }; 
+    }
+
     const startGameHandler = (e) => {
+        e.stopPropagation();
         choosePlayer(e);
+        resetGame(e);
         startGame(e);
     }
 
@@ -113,10 +131,10 @@ const gameFlowLogic = (() => {
 })(Players, gameBoard, displayControl);
 
 const eventListenerz =(() => {
-    const buttons = document.querySelector('.buttonz');
+    const buttons = document.querySelectorAll('.buttonz');
     const cells = document.querySelector('.board');
 
-    buttons.addEventListener('click', gameFlowLogic.startGameHandler);
+    [...buttons].forEach(button => addEventListener('click', gameFlowLogic.startGameHandler));
     cells.addEventListener('click', gameFlowLogic.addMarkerHandler);
 })();
 
