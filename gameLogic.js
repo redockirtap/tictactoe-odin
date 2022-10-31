@@ -2,7 +2,7 @@ const Players = (name, marker) => {
     const player = name || 'John Doe';
     return {player, marker};
 };
-
+//  test
 const gameBoard = (() => {
     const _board = [null, null, null, null, null, null, null, null, null];
     let currentMovesX = [];
