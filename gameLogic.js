@@ -6,11 +6,13 @@ const Players = (name, marker) => {
 const gameBoard = (() => {
     const _board = [null, null, null, null, null, null, null, null, null];
     let currentMovesX = [];
-    let currentMovesO = [];   
+    let currentMovesO = [];
 
     const getBoard = () => [..._board];
     const addMarker = (position, marker) => {_board[position] = marker};
+    const isBusy = (position) => _board[position] !== null;
     const isDraw = () => _board.every((cell) => cell !== null);
+
     const isWin = (player1, marker, position) => {
         const winConditionsHorizontal = [[0, 1, 2], [3, 4, 5], [6, 7, 8]];
         const winConditionsVertical = [[0, 3, 6], [1, 4, 7], [2, 5, 8]];
@@ -23,8 +25,8 @@ const gameBoard = (() => {
             return true;
         }
         return false;
-        };
-    const isBusy = (position) => _board[position] !== null;
+    };
+
     const cleanBoard = () => {
         currentMovesX = [];
         currentMovesO = [];
@@ -35,7 +37,7 @@ const gameBoard = (() => {
 })();
 
 const displayControl = (() => {
-
+    
     const showMarker = (e, marker) => {
         const chosenCell = e.target;
         chosenCell.textContent = marker;
@@ -65,13 +67,47 @@ const displayControl = (() => {
         if (player2 && playButton.hasAttribute("disabled")) playButton.removeAttribute('disabled');
         if (!player2 && !(playButton.hasAttribute("disabled"))) playButton.setAttribute('disabled', '');
     }
-    return {showMarker, cleanBoard, hideMenu, showMenu, togglePlayButton};
+
+    const showScore = (gameScore, marker) => {
+        const window = document.querySelector('main');
+        let scoreDisplay = document.querySelector('.score');
+
+        if (scoreDisplay === null) {
+            scoreDisplay = document.createElement('div');
+            scoreDisplay.className = 'score';
+        }
+        scoreDisplay.textContent = "";
+
+        const counterCreator = () => {
+            let count = 0;
+            return ++count;
+          };
+
+        const counterX = counterCreator();
+        const counterO = counterCreator();
+        console.log(counterX)
+
+        if (gameScore.at(-1) === 'tie') {
+            scoreDisplay.textContent = "It's a tie! Score:";
+            window.insertBefore(scoreDisplay, window.firstChild);
+        } else if (gameScore.at(-1) === 'x') {
+            scoreDisplay.textContent = "X won!";
+            window.insertBefore(scoreDisplay, window.firstChild);
+        } else {
+            scoreDisplay.textContent = "O won!";
+            window.insertBefore(scoreDisplay, window.firstChild);
+        }
+        scoreDisplay.textContent += `\n${counterX} - ${counterO}`;
+        console.log(gameScore);
+    }
+    return {showMarker, cleanBoard, hideMenu, showMenu, togglePlayButton, showScore};
 })();
 
 const gameFlowLogic = (() => {
     let player1; // initialize players 
     let player2;
     let counter = 0; // counter for player turns
+    let gameScore = [];   
 
     // START AND END GAME LOGIC
     const choosePlayer = function (e) { // choose player vs player or player vs AI
@@ -106,6 +142,13 @@ const gameFlowLogic = (() => {
     }
 
     // GAME FLOW LOGIC
+
+    const addGameScore = (marker='tie') => {
+        gameScore.push(marker);
+        displayControl.showScore(gameScore, marker);
+        return true;
+    }
+
     const changeTurn = (position) => {
         if (checkForBusy(position)) return;
         let currentMarker; 
@@ -113,8 +156,9 @@ const gameFlowLogic = (() => {
         counter++;
         return currentMarker;
     }
-    const checkForDraw = () => gameBoard.isDraw() ? gameBoard.cleanBoard() && displayControl.cleanBoard() : false;
-    const checkForWin = (player1, marker, position) => gameBoard.isWin(player1, marker, position) ? gameBoard.cleanBoard() 
+    const checkForDraw = () => gameBoard.isDraw() ? gameBoard.cleanBoard() && addGameScore() && displayControl.cleanBoard() : false;
+    const checkForWin = (player1, marker, position) => gameBoard.isWin(player1, marker, position) ? gameBoard.cleanBoard()
+                                                                                                    && addGameScore(marker) 
                                                                                                     && displayControl.cleanBoard() : false;
     const checkForBusy = (position) => gameBoard.isBusy(position) ? true : false;
     
