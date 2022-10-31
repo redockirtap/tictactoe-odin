@@ -11,9 +11,9 @@ const gameBoard = (() => {
     const getBoard = () => [..._board];
     const addMarker = (position, marker) => {_board[position] = marker, console.log(_board)};
     const isDraw = () => {
-        currentMovesO = [];
-        currentMovesX = [];
-        return _board.every((cell) => cell !== null);
+        // currentMovesO = [];
+        // currentMovesX = [];
+        if (_board.every((cell) => cell !== null)) return [currentMovesO = [], currentMovesX = []];
     };
     const isWin = (player1, marker, position) => {
         const winConditionsHorizontal = [[0, 1, 2], [3, 4, 5], [6, 7, 8]];
