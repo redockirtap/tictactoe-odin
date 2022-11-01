@@ -68,7 +68,9 @@ const displayControl = (() => {
         if (!player2 && !(playButton.hasAttribute("disabled"))) playButton.setAttribute('disabled', '');
     }
 
-    const showScore = (gameScore, marker) => {
+    let counterX = 0;
+    let counterO = 0;
+    const showScore = (gameScore) => {
         const window = document.querySelector('main');
         let scoreDisplay = document.querySelector('.score');
 
@@ -76,31 +78,27 @@ const displayControl = (() => {
             scoreDisplay = document.createElement('div');
             scoreDisplay.className = 'score';
         }
-        scoreDisplay.textContent = "";
-
-        const counterCreator = () => {
-            let count = 0;
-            return ++count;
-          };
-
-        const counterX = counterCreator();
-        const counterO = counterCreator();
-        console.log(counterX)
 
         if (gameScore.at(-1) === 'tie') {
-            scoreDisplay.textContent = "It's a tie! Score:";
+            scoreDisplay.textContent = `It's a tie! Score: ${counterX} - ${counterO}`;
             window.insertBefore(scoreDisplay, window.firstChild);
         } else if (gameScore.at(-1) === 'x') {
-            scoreDisplay.textContent = "X won!";
+            scoreDisplay.textContent = `X won! Score: ${++counterX} - ${counterO}`;
             window.insertBefore(scoreDisplay, window.firstChild);
         } else {
-            scoreDisplay.textContent = "O won!";
+            scoreDisplay.textContent = `O won! Score: ${counterX} - ${++counterO}`;
             window.insertBefore(scoreDisplay, window.firstChild);
         }
-        scoreDisplay.textContent += `\n${counterX} - ${counterO}`;
-        console.log(gameScore);
+        return {scoreDisplay}
     }
-    return {showMarker, cleanBoard, hideMenu, showMenu, togglePlayButton, showScore};
+    
+    const resetScore = () => {
+        let scoreDisplay = document.querySelector('.score');
+        counterX = 0;
+        counterO = 0;
+        scoreDisplay.textContent = "";
+    }
+    return {showMarker, cleanBoard, hideMenu, showMenu, togglePlayButton, showScore, resetScore};
 })();
 
 const gameFlowLogic = (() => {
@@ -130,6 +128,7 @@ const gameFlowLogic = (() => {
             gameBoard.cleanBoard();
             displayControl.cleanBoard();
             displayControl.togglePlayButton();
+            displayControl.resetScore();
             displayControl.showMenu();
         }; 
     }
@@ -145,7 +144,7 @@ const gameFlowLogic = (() => {
 
     const addGameScore = (marker='tie') => {
         gameScore.push(marker);
-        displayControl.showScore(gameScore, marker);
+        displayControl.showScore(gameScore);
         return true;
     }
 
