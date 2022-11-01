@@ -161,3 +161,9 @@ button:active {
 #play {
     margin-top: 1rem;
 }
+
+.score {
+    position: absolute;
+    top: 5rem;
+    font-weight: 600;
+}
